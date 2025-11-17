@@ -1,0 +1,27 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    public function up(): void
+    {
+        Schema::table('respuestas_evaluacion', function (Blueprint $table) {
+            // Solo si no existe
+            if (!Schema::hasColumn('respuestas_evaluacion', 'intento_id')) {
+                $table->foreignId('intento_id')->nullable()->after('evaluacion_id')
+                    ->constrained('intentos_evaluacion')->onDelete('cascade');
+            }
+        });
+    }
+
+    public function down(): void
+    {
+        Schema::table('respuestas_evaluacion', function (Blueprint $table) {
+            $table->dropForeign(['intento_id']);
+            $table->dropColumn('intento_id');
+        });
+    }
+};
